@@ -106,7 +106,7 @@ function Settings() {
            ))}
         </ul>
 
-  <button  className="text-[#28CD56] border-2 border-[#C9FFD5] mb-10 bg-[#F5FFF8] hover:bg-[#22a343] focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-4 text-center">Log out</button>
+  <button  className="text-[#28CD56] border-2 border-[#C9FFD5] mb-10 bg-[#F5FFF8] hover:bg-[#22a343] focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-4 text-center lg:w-full">Log out</button>
 
     </div>
    </>
