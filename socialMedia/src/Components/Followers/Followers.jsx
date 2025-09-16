@@ -65,10 +65,10 @@ function Followers() {
                   <div className="w-[55px] h-[55px] rounded-full p-1 mr-4">
                     <img src={Avatar} alt="avatar" className="w-full" />
                   </div>
-                  {concole.log()}
+                  {console.log(follower)}
                   <div>
-                    <p className="font-medium text-[16px] mb-1">{dispatch(getUser(follower.follower_id)).name}</p>
-                    <p className="text-[#919191] text-[12px]">{dispatch(getUser(follower.follower_id)).userName}</p>
+                    <p className="font-medium text-[16px] mb-1">{()=>{dispatch(getUser(follower.follower_id)).name}}</p>
+                    <p className="text-[#919191] text-[12px]">{()=>{dispatch(getUser(follower.follower_id)).userName}}</p>
                   </div>
                   {followedBack.includes(follower)
                   ?<div className="ms-auto cursor-pointer py-3 px-10 bg-white border border-gray-300 rounded-4xl flex justify-center items-center">Following</div>
