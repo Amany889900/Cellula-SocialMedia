@@ -11,6 +11,7 @@ import Settings from './Components/Settings/Settings'
 import Register from './Components/Register/Register';
 import Profile from './Components/Profile/Profile';
 import EditProfile from './Components/EditProfile/EditProfile';
+import Followers from './Components/Followers/Followers';
 
 function App() {
   
@@ -21,6 +22,7 @@ function App() {
     {path:"/register",element:<Register/>},
     {path:"/profile",element:<Profile/>},
     {path:"/editProfile",element:<EditProfile/>},
+    {path:"/followers",element:<Followers/>},
   ]);
   return (
     <>
