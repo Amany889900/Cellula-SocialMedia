@@ -1,16 +1,43 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import Avatar from "../../assets/Images/ImageAvatar.png"
 import { useNavigate } from 'react-router-dom';
-
+import { useSelector, useDispatch } from 'react-redux'
+import { getFollowers, getFollowing, getNotifications, getPosts, getUser } from '../../Store/Slices/UserSlice';
 function Settings() {
-  const navigate = useNavigate();
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
+    const { followers,following,posts,notifications,user,loading, error } = useSelector((state) => state.user);
+
+  const userId = JSON.parse(localStorage.getItem("userId"))
+  
+   useEffect(() => {
+    dispatch(getUser(userId));
+  }, [user]);
+
+  useEffect(() => {
+    dispatch(getFollowers(userId));
+  }, [followers.length]);
+
+    useEffect(() => {
+    dispatch(getFollowing(userId));
+  }, [following.length]);
+
+    useEffect(() => {
+    dispatch(getPosts(userId));
+  }, [posts.length]);
+
+    useEffect(() => {
+    dispatch(getNotifications(userId));
+  }, [notifications.length]);
+
+  console.log(followers,following,posts);
     const listItems = [
         <div className="flex items-center mb-10">
           <div>
             <p className="font-medium text-[16px] mb-1">Notifications</p>
             <p className="text-[#919191] text-[12px]">See your latest activity</p>
           </div>
-          <div className="w-[24px] h-[24px] ms-auto  rounded-full flex justify-center items-center text-white bg-[#34D15C] p-4">35</div>
+          <div className="w-[24px] h-[24px] ms-auto  rounded-full flex justify-center items-center text-white bg-[#34D15C] p-4">{notifications.length}</div>
           <div className="ms-auto w-[36px] h-[36px] rounded-full border-2 border-[#EEEEEE] flex justify-center items-center"><i className="fa-solid fa-chevron-right text-[#919191]"></i></div>
        </div>
             ,
@@ -65,10 +92,12 @@ function Settings() {
             <img src={Avatar} alt="avatar" className="w-full" />
           </div>
           <div>
-            <p className="font-medium text-[16px] mb-1">Morsalin Nur</p>
-            <p className="text-[#919191] text-[12px]">@morsalin.nur</p>
+            <p className="font-medium text-[16px] mb-1">{user.name}</p>
+            <p className="text-[#919191] text-[12px]">{user.userName}</p>
           </div>
-          <div className="ms-auto w-[36px] h-[36px] rounded-full border-2 border-[#EEEEEE] flex justify-center items-center"><i className="fa-solid fa-chevron-right text-[#919191]"></i></div>
+          <div onClick={()=>{
+            navigate("/profile")
+          }} className="ms-auto cursor-pointer w-[36px] h-[36px] rounded-full border-2 border-[#EEEEEE] flex justify-center items-center"><i className="fa-solid fa-chevron-right text-[#919191]"></i></div>
        </div>
     </div>
 
@@ -77,7 +106,7 @@ function Settings() {
             <div className="w-1/3 p-5">
             <div className="border-2 py-5 text-center border-[#EEEEEE] rounded-2xl flex justify-center items-center">
                 <div>
-                    <p className="text-[25px]">572</p>
+                    <p className="text-[25px]">{posts.length}</p>
                     <p className="text-[12px] text-[#919191]">Post</p>
                 </div>
             </div>
@@ -85,7 +114,7 @@ function Settings() {
             <div className="w-1/3 p-5">
             <div className="border-2 py-5 text-center border-[#EEEEEE] rounded-2xl flex justify-center items-center">
                 <div>
-                    <p className="text-[25px]">2.5 k</p>
+                    <p className="text-[25px]">{following.length}</p>
                     <p className="text-[12px] text-[#919191]">Following</p>
                 </div>
             </div>
@@ -93,7 +122,7 @@ function Settings() {
             <div className="w-1/3 p-5">
             <div className="border-2 py-5 text-center border-[#EEEEEE] rounded-2xl flex justify-center items-center">
                 <div>
-                    <p className="text-[25px]">6.3 k</p>
+                    <p className="text-[25px]">{followers.length}</p>
                     <p className="text-[12px] text-[#919191]">Followers</p>
                 </div>
             </div>

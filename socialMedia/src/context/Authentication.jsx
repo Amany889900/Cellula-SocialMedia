@@ -19,6 +19,7 @@ const AuthContextProvider = ({children})=>{
             }
             })   
             toast.success('Logged in Successfully');
+            localStorage.setItem("userId",JSON.stringify(data)) // store userId
             return data;
         } catch (error) {
             toast.error("Login failed due to invalid credentials");
