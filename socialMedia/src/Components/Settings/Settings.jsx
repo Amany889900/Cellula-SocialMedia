@@ -12,7 +12,7 @@ function Settings() {
   
    useEffect(() => {
     dispatch(getUser(userId));
-  }, [user]);
+  }, [userId]);
 
   useEffect(() => {
     dispatch(getFollowers(userId));
@@ -38,7 +38,9 @@ function Settings() {
             <p className="text-[#919191] text-[12px]">See your latest activity</p>
           </div>
           <div className="w-[24px] h-[24px] ms-auto  rounded-full flex justify-center items-center text-white bg-[#34D15C] p-4">{notifications.length}</div>
-          <div className="ms-auto w-[36px] h-[36px] rounded-full border-2 border-[#EEEEEE] flex justify-center items-center"><i className="fa-solid fa-chevron-right text-[#919191]"></i></div>
+          <div onClick={()=>{
+            navigate("/notifications")
+          }} className="ms-auto w-[36px] h-[36px] cursor-pointer rounded-full border-2 border-[#EEEEEE] flex justify-center items-center"><i className="fa-solid fa-chevron-right text-[#919191]"></i></div>
        </div>
             ,
                <div className="flex items-center mb-10">

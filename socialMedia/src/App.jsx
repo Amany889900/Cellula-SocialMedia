@@ -14,6 +14,7 @@ import EditProfile from './Components/EditProfile/EditProfile';
 import Followers from './Components/Followers/Followers';
 import FollowerDetails from './Components/FollowerDetails/FollowerDetails';
 import Chat from './Components/Chat/Chat';
+import Notifications from './Components/Notifications/Notifications';
 
 function App() {
   
@@ -26,6 +27,7 @@ function App() {
     {path:"/editProfile",element:<EditProfile/>},
     {path:"/followers",element:<Followers/>},
     {path:"/chat/:follower_id",element:<Chat/>},
+    {path:"/notifications",element:<Notifications/>},
     {path:"/followerDetails/:follower_id",element:<FollowerDetails/>},
   ]);
   return (

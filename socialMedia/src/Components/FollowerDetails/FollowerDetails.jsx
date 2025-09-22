@@ -2,12 +2,12 @@ import React, { useEffect } from 'react'
 import Avatar from "../../assets/Images/ImageAvatar.png"
 import { useNavigate, useParams } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux'
-import { getFollowers, getFollowing, getNotifications, getPosts, getUser } from '../../Store/Slices/UserSlice';
+import {getFollowers, getFollowing,getPosts,getUser} from '../../Store/Slices/UserSlice';
 function FollowerDetails() {
     const {follower_id} = useParams();
     const navigate = useNavigate();
     const dispatch = useDispatch();
-    const { followers,following,posts,user,loading, error } = useSelector((state) => state.user);
+    const { followers,following,posts,user} = useSelector((state) => state.user);
 
 //   const userId = JSON.parse(localStorage.getItem("userId"))
   
@@ -27,9 +27,7 @@ function FollowerDetails() {
     dispatch(getPosts(follower_id));
   }, [posts.length]);
 
-//     useEffect(() => {
-//     dispatch(getNotifications(userId));
-//   }, [notifications.length]);
+
 
   console.log(followers,following,posts);
    

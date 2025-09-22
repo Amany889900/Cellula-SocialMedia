@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
-    const chat = JSON.parse(localStorage.getItem("chat"))
+   const storedChat = JSON.parse(localStorage.getItem("chat")) || [];
 
 
 
@@ -12,9 +12,13 @@ let initialState = {
   notifications: [],
   user:{},
   promptResponse:"",
-  chat:chat||[],
+  chat:storedChat||[],
   loading: false,
   error: null,
+};
+
+const saveChatToStorage = (chat) => {
+  localStorage.setItem("chat", JSON.stringify(chat));
 };
 
 export const getUser = createAsyncThunk(
@@ -143,7 +147,16 @@ export const sendPrompt = createAsyncThunk(
 const userSlice = createSlice({
   name: "user",
   initialState,
-  reducers: {},
+  reducers: {
+     addMessage: (state, action) => {
+      state.chat.push(action.payload);
+      saveChatToStorage(state.chat);
+    },
+    clearChat: (state) => {
+      state.chat = [];
+      saveChatToStorage([]);
+    },
+  },
   extraReducers: (builder) => {
     builder
        // user
@@ -221,16 +234,20 @@ const userSlice = createSlice({
         state.loading = false;
       })
 
-                  // chat
+       // sendPrompt
       .addCase(sendPrompt.pending, (state) => {
         state.loading = true;
       })
       .addCase(sendPrompt.fulfilled, (state, action) => {
         state.loading = false;
-        state.promptResponse = action.payload;
+        // Add prompt response directly to chat
+        state.chat.push({ sender: "prompt", content: action.payload});
+        console.log(action.payload);
+        saveChatToStorage(state.chat);
       })
       .addCase(sendPrompt.rejected, (state, action) => {
         state.loading = false;
+        state.error = action.payload;
       })
 
       // notifications
@@ -248,4 +265,5 @@ const userSlice = createSlice({
   },
 });
 
+export const { addMessage, clearChat } = userSlice.actions;
 export default userSlice.reducer;
