@@ -1,12 +1,18 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
+    const chat = JSON.parse(localStorage.getItem("chat"))
 
-const initialState = {
+
+
+
+let initialState = {
   followers: [],
   following: [],
   posts: [],
   notifications: [],
   user:{},
+  promptResponse:"",
+  chat:chat||[],
   loading: false,
   error: null,
 };
@@ -20,7 +26,7 @@ export const getUser = createAsyncThunk(
       });
       return response.data; 
     } catch (error) {
-      return thunkAPI.rejectWithValue(error.response?.data || "Error fetching followers");
+      return thunkAPI.rejectWithValue(error.response?.data || "Error fetching user");
     }
   }
 );
@@ -82,6 +88,57 @@ export const getNotifications = createAsyncThunk(
   }
 );
 
+export const follow = createAsyncThunk(
+  "user/follow",
+  async ({ sender_id, receiver_id }, thunkAPI) => {
+    try {
+      const response = await axios.post(
+        "http://127.0.0.1:8000/follow",
+        null, // no body
+        {
+          params: { sender_id, receiver_id },
+        }
+      );
+      return response.data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.response?.data || "Error following user");
+    }
+  }
+);
+
+export const unfollow = createAsyncThunk(
+  "user/unfollow",
+  async ({ sender_id, receiver_id }, thunkAPI) => {
+    try {
+      const response = await axios.delete("http://127.0.0.1:8000/unfollow", {
+        params: { sender_id, receiver_id },
+      });
+      return response.data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.response?.data || "Error unfollowing user");
+    }
+  }
+);
+
+export const sendPrompt = createAsyncThunk(
+  "user/sendPrompt",
+  async ({user_id,content}, thunkAPI) => {
+    try {
+      const response = await axios.post(
+        "http://127.0.0.1:8000/send-prompt",
+        null, // no body
+        {
+          params:{user_id,content},
+        }
+      );
+      return response.data.response;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.response?.data || "Error sending prompt");
+    }
+  }
+);
+
+
 
 const userSlice = createSlice({
   name: "user",
@@ -139,6 +196,41 @@ const userSlice = createSlice({
       .addCase(getPosts.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
+      })
+
+      // follow
+      .addCase(follow.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(follow.fulfilled, (state, action) => {
+        state.loading = false;
+      })
+      .addCase(follow.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+
+            // unfollow
+      .addCase(unfollow.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(unfollow.fulfilled, (state, action) => {
+        state.loading = false;
+      })
+      .addCase(unfollow.rejected, (state, action) => {
+        state.loading = false;
+      })
+
+                  // chat
+      .addCase(sendPrompt.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(sendPrompt.fulfilled, (state, action) => {
+        state.loading = false;
+        state.promptResponse = action.payload;
+      })
+      .addCase(sendPrompt.rejected, (state, action) => {
+        state.loading = false;
       })
 
       // notifications

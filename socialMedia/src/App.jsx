@@ -12,6 +12,8 @@ import Register from './Components/Register/Register';
 import Profile from './Components/Profile/Profile';
 import EditProfile from './Components/EditProfile/EditProfile';
 import Followers from './Components/Followers/Followers';
+import FollowerDetails from './Components/FollowerDetails/FollowerDetails';
+import Chat from './Components/Chat/Chat';
 
 function App() {
   
@@ -23,6 +25,8 @@ function App() {
     {path:"/profile",element:<Profile/>},
     {path:"/editProfile",element:<EditProfile/>},
     {path:"/followers",element:<Followers/>},
+    {path:"/chat/:follower_id",element:<Chat/>},
+    {path:"/followerDetails/:follower_id",element:<FollowerDetails/>},
   ]);
   return (
     <>
