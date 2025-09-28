@@ -15,6 +15,7 @@ import Followers from './Components/Followers/Followers';
 import FollowerDetails from './Components/FollowerDetails/FollowerDetails';
 import Chat from './Components/Chat/Chat';
 import Notifications from './Components/Notifications/Notifications';
+import Timeline from './Components/Timeline/Timeline';
 
 function App() {
   
@@ -28,6 +29,7 @@ function App() {
     {path:"/followers",element:<Followers/>},
     {path:"/chat/:follower_id",element:<Chat/>},
     {path:"/notifications",element:<Notifications/>},
+    {path:"/timeline",element:<Timeline/>},
     {path:"/followerDetails/:follower_id",element:<FollowerDetails/>},
   ]);
   return (

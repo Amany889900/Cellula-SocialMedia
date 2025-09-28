@@ -7,7 +7,7 @@ import axios from 'axios';
 
 function Followers() {
   const [followerDetails, setFollowerDetails] = useState({});
-  const [localFollowing, setLocalFollowing] = useState([]); // ✅ local state Optimistic update
+  // const [localFollowing, setLocalFollowing] = useState([]); // ✅ local state Optimistic update
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -21,10 +21,10 @@ function Followers() {
     dispatch(getFollowing(userId));
   }, [dispatch, userId]);
 
-  // Sync localFollowing with redux following
-  useEffect(() => {
-    setLocalFollowing(following.map(f => f.following_id));
-  }, [following]);
+  // // Sync localFollowing with redux following
+  // useEffect(() => {
+  //   setLocalFollowing(following.map(f => f.following_id));
+  // }, [following]);
 
   // Fetch details of followers
   useEffect(() => {
@@ -45,17 +45,14 @@ function Followers() {
     if (followers.length) fetchDetails();
   }, [followers]);
 
-  // Handle follow/unfollow with optimistic update
-  const handleToggleFollow = (followerId, isFollowing) => {
-    if (isFollowing) {
-      // Optimistic update
-      setLocalFollowing(prev => prev.filter(id => id !== followerId));
-      dispatch(unfollow({ sender_id: userId, receiver_id: followerId }));
-    } else {
-      setLocalFollowing(prev => [...prev, followerId]);
-      dispatch(follow({ sender_id: userId, receiver_id: followerId }));
-    }
-  };
+ const handleToggleFollow = (followerId, isFollowing) => {
+  if (isFollowing) {
+    dispatch(unfollow({ sender_id: userId, receiver_id: followerId }));
+  } else {
+    dispatch(follow({ sender_id: userId, receiver_id: followerId }));
+  }
+};
+
 
   return (
     <>
@@ -75,7 +72,8 @@ function Followers() {
 
       {followers.map((follower, idx) => {
         const followerId = follower.follower_id;
-        const isFollowing = localFollowing.includes(followerId);
+        const isFollowing = following.some(f => f.following_id === followerId);
+
 
         return (
           <div

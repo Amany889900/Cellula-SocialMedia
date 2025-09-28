@@ -85,7 +85,31 @@ export const getNotifications = createAsyncThunk(
       const response = await axios.get("http://127.0.0.1:8000/get-notifications", {
         params: { user_id },
       });
-      return response.data;
+      const notifications = response.data;
+
+      // collect unique user_ids
+      const userIds = [...new Set(notifications.map((p) => p.user_id))];
+
+      // fetch each user once
+      const usersResponse = await Promise.all(
+        userIds.map((id) =>
+          axios.get("http://127.0.0.1:8000/get-user_data", {
+            params: { user_id: id },
+          })
+        )
+      );
+
+      const usersMap = {};
+      usersResponse.forEach((res) => {
+        const user = res.data[0]; 
+        usersMap[user.id] = user;
+      });
+
+      // merge user into post
+      return notifications.map((notification) => ({
+        ...notification,
+        user: usersMap[notification.user_id],
+      }));
     } catch (error) {
       return thunkAPI.rejectWithValue(error.response?.data || "Error fetching notifications");
     }
@@ -106,6 +130,24 @@ export const follow = createAsyncThunk(
       return response.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(error.response?.data || "Error following user");
+    }
+  }
+);
+
+export const readNotification = createAsyncThunk(
+  "user/readNotification",
+  async (notification_id, thunkAPI) => {
+    try {
+      const response = await axios.post(
+        "http://127.0.0.1:8000/mark-notification-as-read",
+        null, // no body
+        {
+          params: notification_id,
+        }
+      );
+      return response.data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.response?.data || "Error reading notification");
     }
   }
 );
@@ -212,27 +254,71 @@ const userSlice = createSlice({
       })
 
       // follow
-      .addCase(follow.pending, (state) => {
+      .addCase(follow.pending, (state, action) => {
         state.loading = true;
+
+        // Optimistic update: add immediately
+        const { receiver_id } = action.meta.arg;
+        if (!state.following.find(f => f.following_id === receiver_id)) {
+          state.following.push({ following_id: receiver_id });
+        }
       })
-      .addCase(follow.fulfilled, (state, action) => {
+      .addCase(follow.fulfilled, (state) => {
         state.loading = false;
       })
       .addCase(follow.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
+
+        // Rollback on error
+        const { receiver_id } = action.meta.arg;
+        state.following = state.following.filter(f => f.following_id !== receiver_id);
       })
 
-            // unfollow
-      .addCase(unfollow.pending, (state) => {
+       // readNotification
+      .addCase(readNotification.pending, (state, action) => {
         state.loading = true;
+
+        // Optimistic update: add immediately
+        const { notification_id } = action.meta.arg;
+        const notification = state.notifications.find(n => n.id === notification_id )
+        notification.is_read = 1;
+    
       })
-      .addCase(unfollow.fulfilled, (state, action) => {
+      .addCase(readNotification.fulfilled, (state) => {
+        state.loading = false;
+      })
+      .addCase(readNotification.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+
+        // Rollback on error
+        const { notification_id } = action.meta.arg;
+        const notification = state.notifications.find(n => n.id === notification_id )
+        notification.is_read = 0;
+
+      })
+
+      // unfollow
+      .addCase(unfollow.pending, (state, action) => {
+        state.loading = true;
+
+        // Optimistic update: remove immediately
+        const { receiver_id } = action.meta.arg;
+        state.following = state.following.filter(f => f.following_id !== receiver_id);
+      })
+      .addCase(unfollow.fulfilled, (state) => {
         state.loading = false;
       })
       .addCase(unfollow.rejected, (state, action) => {
         state.loading = false;
+        state.error = action.payload;
+
+        // Rollback on error
+        const { receiver_id } = action.meta.arg;
+        state.following.push({ following_id: receiver_id });
       })
+
 
        // sendPrompt
       .addCase(sendPrompt.pending, (state) => {

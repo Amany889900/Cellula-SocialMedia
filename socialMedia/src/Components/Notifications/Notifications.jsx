@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import Avatar from "../../assets/Images/ImageAvatar.png"
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { getFollowers, getFollowing, getNotifications, getPosts, getUser } from '../../Store/Slices/UserSlice';
+import { getFollowers, getFollowing, getNotifications, getPosts, getUser, readNotification } from '../../Store/Slices/UserSlice';
 
 
 function Notifications() {
@@ -32,12 +32,7 @@ const navigate = useNavigate();
     dispatch(getNotifications(userId));
   }, [notifications.length]);
 
-  function fetchNotificationDetails(){
-    let notificationDetails = [];
-    for (const notification of notifications) {
-        
-    }
-  }
+ 
 
   return (
    <>
@@ -57,6 +52,27 @@ const navigate = useNavigate();
         </div>
             
          </div>
+        {notifications.map((notification,idx)=>(
+          notification.is_read?"":(<div key={idx} className="flex w-[80%] mx-auto my-15">
+           <div className="flex items-center border p-4 border-gray-300 rounded-2xl shadow-2xl relative w-[80%] md:w-[95%]">
+                                       <div className="w-[55px] h-[55px] rounded-full p-1 mr-4">
+                                         <img src={Avatar} alt="avatar" className="w-full" />
+                                       </div>
+                                       <div>
+                                         <p className="font-medium text-[16px] mb-1">{notification.user.name}</p>
+                                         <p className="text-[#919191] text-[12px]">52 minutes ago</p>
+                                       </div>
+                                       <p className="ms-10">{notification.text}</p>
+                                      
+          </div>
+           <div onClick={()=>{dispatch(readNotification({ notification_id: notification.id }))}} className='rounded-2xl  p-5 absolute right-5 md:right-30 bg-[#34D15C] cursor-pointer text-white text-center'><i className="fa-solid fa-check"></i><br />Read</div>
+         </div>
+          )
+        ))}
+         
+         
+          
+
    </>
   )
 }
