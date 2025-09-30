@@ -1,5 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
+import { createComment } from "./CommentSlice";
+
 
 
 
@@ -172,6 +174,30 @@ const postSlice = createSlice({
         state.loading = false;
         state.error = action.payload;
       })
+
+            // createComment optimistic update
+      .addCase(createComment.pending, (state, action) => {
+        state.loading = true;
+        const { post_id } = action.meta.arg;
+        const post = state.allPostsWithUserData.find(p => p.id === post_id);
+        if (post) {
+          post.comments_count = (post.comments_count || 0) + 1; // optimistic increment
+        }
+      })
+      .addCase(createComment.fulfilled, (state, action) => {
+        state.loading = false;
+        
+      })
+      .addCase(createComment.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+        const { post_id } = action.meta.arg;
+        const post = state.allPostsWithUserData.find(p => p.id === post_id);
+        if (post) {
+          post.comments_count = (post.comments_count || 0) - 1; // rollback on error
+        }
+      })
+
 
        // sharePost
       .addCase(sharePost.pending, (state,action) => {

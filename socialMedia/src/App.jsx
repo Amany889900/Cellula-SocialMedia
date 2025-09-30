@@ -16,6 +16,7 @@ import FollowerDetails from './Components/FollowerDetails/FollowerDetails';
 import Chat from './Components/Chat/Chat';
 import Notifications from './Components/Notifications/Notifications';
 import Timeline from './Components/Timeline/Timeline';
+import PostDetails from './Components/PostDetails/PostDetails';
 
 function App() {
   
@@ -31,6 +32,7 @@ function App() {
     {path:"/notifications",element:<Notifications/>},
     {path:"/timeline",element:<Timeline/>},
     {path:"/followerDetails/:follower_id",element:<FollowerDetails/>},
+    {path:"/postDetails/:post_id",element:<PostDetails/>},
   ]);
   return (
     <>
