@@ -148,6 +148,7 @@ const handleSendComment = (postId) => {
                 </div>
                 {expandedPosts[post.id]? <div className="w-[80%] mx-auto flex items-center mt-10">
           <input
+          onClick={(e)=>{e.preventDefault(); e.stopPropagation()}}
             value={commentTexts[post.id] || ""}   // controlled input
             onChange={(e) =>
               setCommentTexts(prev => ({ ...prev, [post.id]: e.target.value }))

@@ -122,7 +122,9 @@ function Settings() {
             </div>
             </div>
             <div className="w-1/3 p-5">
-            <div className="border-2 py-5 text-center border-[#EEEEEE] rounded-2xl flex justify-center items-center">
+            <div onClick={()=>{
+              navigate("/followers")
+            }} className="border-2 py-5 cursor-pointer text-center border-[#EEEEEE] rounded-2xl flex justify-center items-center">
                 <div>
                     <p className="text-[25px]">{followers.length}</p>
                     <p className="text-[12px] text-[#919191]">Followers</p>

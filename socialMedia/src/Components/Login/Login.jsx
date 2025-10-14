@@ -43,7 +43,7 @@ function Login() {
 
 <form className="max-w-md mx-auto mt-15" onSubmit={handleSubmit(async(data) => {
        const userId = await login(data);
-       if(userId) navigate("/settings")
+       if(userId) navigate("/timeline")
       })}>
   
   {loginInputs.map((input,idx)=>(<div key={idx}>
